@@ -1,2 +1,2 @@
-# clap
-:clap: NodeJS plugin manager
+# :clap:clap
+NodeJS plugin manager
