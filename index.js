@@ -29,7 +29,7 @@ clap.resolve = Promise.method(function (opts) {
         .keys(mod.require('./package').dependencies || {})
         .map(function (dep) { return mod.require(dep+'/package'); }));
       return pkgs.reduce(function (pkgs, pkg) {
-        if ((pkg.keywords || []).indexOf(opts.keyword) !== -1) pkgs.push(pkg.realPath);
+        if ((pkg.keywords || []).indexOf(opts.keyword) !== -1) pkgs.push(pkg.realPath || pkg.name);
         return pkgs;
       }, []);
     }));
