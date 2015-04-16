@@ -1,3 +1,4 @@
+var path = require('path');
 var Promise = require('bluebird');
 var npm = require('npm');
 var fs = Promise.promisifyAll(require('fs'));
@@ -16,10 +17,10 @@ clap.load = Promise.method(function (val, opts) {
 });
 
 clap.resolve = Promise.method(function (opts) {
-  var sources = (opts.paths || []).map(function (path) {
-    return fs.readdirAsync(path).map(function (file) {
-      return path.join(path, file);
-    });
+  var sources = (opts.paths || []).map(function (optPath) {
+    return fs.readdirAsync(optPath)
+      .catch(function () { return []; })
+      .map(function (file) { return path.join(optPath, file); });
   });
   if (opts.keyword) {
     var mod = opts.module || require.main;
