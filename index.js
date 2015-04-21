@@ -29,10 +29,15 @@ clap.resolve = Promise.method(function (opts) {
       if (mod) pkgs = pkgs.concat(Object
         .keys(mod.require('./package').dependencies || {})
         .map(function (dep) { return mod.require(dep+'/package'); }));
-      return pkgs.reduce(function (pkgs, pkg) {
-        if ((pkg.keywords || []).indexOf(opts.keyword) !== -1) pkgs.push(pkg.realPath || pkg.name);
-        return pkgs;
-      }, []);
+
+      var matchingPkgs = pkgs.reduce(function (matchingPkgs, pkg) {
+        if ((pkg.keywords || []).indexOf(opts.keyword) !== -1) matchingPkgs[pkg.name] = pkg;
+        return matchingPkgs;
+      }, {});
+      return Object.keys(matchingPkgs).map(function (pkgName) {
+        var pkg = matchingPkgs[pkgName];
+        return pkg.realPath || pkg.name;
+      });
     }));
   }
   return Promise.reduce(sources, function (results, plugins) {
