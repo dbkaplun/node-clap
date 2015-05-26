@@ -8,14 +8,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/secrettriangle/node-clap.git"
+    "url": "https://github.com/dbkaplun/node-clap.git"
   },
-  "author": "Dan Kaplun <dan@secrettriangle.net>",
+  "author": "Dan Kaplun <dbkaplun@gmail.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/secrettriangle/node-clap/issues"
+    "url": "https://github.com/dbkaplun/node-clap/issues"
   },
-  "homepage": "https://github.com/secrettriangle/node-clap",
+  "homepage": "https://github.com/dbkaplun/node-clap",
   "dependencies": {
     "bluebird": "^2.9.24",
     "npm": "^2.7.4"
