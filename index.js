@@ -24,10 +24,13 @@ clap.resolve = Promise.method(function (opts) {
   });
   if (opts.keyword) {
     var mod = opts.module || require.main;
+    var packageJSON = opts.package || mod.filename;
+    if (typeof packageJSON === 'string') packageJSON = clap.resolvePackageJSON(mod, packageJSON);
+    if (typeof packageJSON !== 'object') throw new Error("couldn't resolve package.json");
     sources.push(clap.lsGlobalPkgs().then(function (globalPkgs) {
       var pkgs = globalPkgs;
       if (mod) pkgs = pkgs.concat(Object
-        .keys(mod.require('./package').dependencies || {})
+        .keys(packageJSON.dependencies || {})
         .map(function (dep) { return mod.require(dep+'/package'); }));
 
       var matchingPkgs = pkgs.reduce(function (matchingPkgs, pkg) {
@@ -45,6 +48,17 @@ clap.resolve = Promise.method(function (opts) {
   }, []);
 });
 
+clap.resolvePackageJSON = function (mod, packageJSONPath) {
+  if (!packageJSONPath) packageJSONPath = mod.filename;
+  do {
+    try {
+      var packageJSON = mod.require(path.join(packageJSONPath, 'package.json'));
+    } catch (e) {}
+    var lastPackageJSONPath = packageJSONPath;
+    packageJSONPath = path.dirname(packageJSONPath);
+  } while (!packageJSON && lastPackageJSONPath !== packageJSONPath);
+  return packageJSON;
+};
 clap.lsGlobalPkgs = Promise.method(function () {
   return clap._lsGlobalPkgs = clap._lsGlobalPkgs || clap.loadNpmGlobal()
     .then(function () { return Promise.promisify(npm.commands.ls, npm)([], true); })
